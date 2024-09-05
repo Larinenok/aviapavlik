@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AviaPavlik</title>
+  </head>
+  <body>
+    <div class="background-image-container"></div>
+
+    <div class="header">
+        <div class="title-container no-clickable">
+            <div class="title-element">
+                <h1 class="title-text" id="mainwindow-button">AviaPavlik</h1>
+            </div>
+            <div class="title-element">
+                <h2 id="flightwindow-button">Рейсы</h2>
+            </div>
+            <div class="title-element">
+                <h2 id="ticketwindow-button">Билеты</h2>
+            </div>
+            <div class="title-element">
+                <h2 id="signwindow-button">Войти</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="app" id="app"></div>
+    <div class="notification" id="notification">
+        <div class="notification-container" id="notification-container">
+            <div class="flex-row-center">
+                <div class="flex-column-center">
+                    <div class="notification-title">
+                        <h2 class="no-clickable" id="notification-text"></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
