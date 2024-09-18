@@ -27,8 +27,22 @@ export interface TokenObj {
     username: string;
 }
 
+export interface FlightButton {
+    id: string;
+    flight_id: string;
+}
+
+export interface TicketButton {
+    id: string;
+    ticket_id: string;
+}
+
+
+export const HOST_URL = 'http://127.0.0.1:8000/'
+
+
 export async function get_token(username: string, password: string) {
-    const response = await fetch('http://127.0.0.1:8000/api/token/', {
+    const response = await fetch(HOST_URL + 'api/token/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -55,6 +69,16 @@ export async function send_notification(text: string) {
 
     document.querySelector<HTMLDivElement>('#notification-container')!.setAttribute('class', `notification-container notification-container-animation-in`);
     document.querySelector<HTMLHRElement>('#notification-text')!.innerHTML = `${text}`;
+
+    let counter = 4;
+    let intervalId = setInterval(() => {
+            counter = counter - 1;
+            console.log(counter);
+            if(counter === 0) {
+                clearInterval(intervalId)
+                hide_notification();
+            }
+        }, 1000);
 }
 
 export async function hide_notification() {

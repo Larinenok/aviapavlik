@@ -1,16 +1,10 @@
-import { FlightObj, TicketObj } from './utils.ts'
+import { FlightObj, TicketObj, FlightButton, HOST_URL } from './utils.ts'
 import { open_ticketwindow } from './ticketwindow.ts';
-
-
-interface TicketButton {
-    id: string;
-    flight_id: string;
-}
 
 
 async function create_ticket(username: string, flight_id: string) {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/tickets/change/', {
+        const response = await fetch(HOST_URL + 'api/tickets/change/', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('access'),
@@ -37,7 +31,7 @@ async function create_ticket(username: string, flight_id: string) {
 
 export async function open_flightwindow(place_of_departure = '', place_of_arrival = '') {
     try {
-        const response = await fetch('http://0.0.0.0:8000/api/flights/list/', {
+        const response = await fetch(HOST_URL + 'api/flights/list/', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -63,7 +57,7 @@ export async function open_flightwindow(place_of_departure = '', place_of_arriva
             `;
         }
 
-        let buttons: TicketButton[] = [];
+        let buttons: FlightButton[] = [];
 
         for (let i = 0; i < result_json.length; i++) {
             if (place_of_departure != place_of_arrival) {
@@ -112,7 +106,7 @@ export async function open_flightwindow(place_of_departure = '', place_of_arriva
             </table>
             `;
 
-            buttons.push({id: '.ticket-' + i, flight_id: result_json[i].flight_id} as TicketButton);
+            buttons.push({id: '.ticket-' + i, flight_id: result_json[i].flight_id} as FlightButton);
         }
 
         if (data == '') {
@@ -153,7 +147,7 @@ export async function open_flightwindow(place_of_departure = '', place_of_arriva
 
     let flightwindow_button_submit = document.querySelectorAll<HTMLButtonElement>('#flightwindow-button-submit');
 
-        for (let i = 0; i < flightwindow_button_submit.length; i++) {
+    for (let i = 0; i < flightwindow_button_submit.length; i++) {
         flightwindow_button_submit[i].addEventListener('click', (e) => {
             e.preventDefault();
             open_ticketwindow();

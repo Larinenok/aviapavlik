@@ -1,4 +1,4 @@
-import { get_token, send_notification, UserObj } from './utils.ts'
+import { get_token, HOST_URL, send_notification, UserObj } from './utils.ts'
 
 
 export let signwindow_button_submit: HTMLButtonElement | null;
@@ -162,7 +162,7 @@ export async function open_signwindow() {
 }
 
 export async function register(username: string, password: string, first_name: string, last_name: string, patronymic: string) {
-    const response = await fetch('http://127.0.0.1:8000/api/users/register/', {
+    const response = await fetch(HOST_URL + 'api/users/register/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

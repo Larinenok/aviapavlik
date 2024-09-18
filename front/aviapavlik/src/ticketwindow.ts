@@ -1,4 +1,32 @@
-import { TicketObj, UserObj, FlightObj } from './utils.ts'
+import { TicketObj, UserObj, FlightObj, TicketButton, HOST_URL } from './utils.ts'
+
+
+export async function delete_ticket(ticket_id: string) {
+    try {
+        const response = await fetch(HOST_URL + 'api/tickets/change/', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('access'),
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify({'ticket_id': ticket_id}),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const result_s = JSON.stringify(result);
+        let result_json: UserObj[] = JSON.parse(result_s);
+        console.log(result_json);
+
+        open_ticketwindow();
+    } catch (error) {
+        console.log('unexpected error: ', error);
+    }
+}
 
 export async function open_ticketwindow() {
     try {
@@ -9,7 +37,7 @@ export async function open_ticketwindow() {
         if (sessionStorage.getItem('username')) {
             current_user = sessionStorage.getItem('username')!;
 
-            const response_user = await fetch('http://127.0.0.1:8000/api/users/find/', {
+            const response_user = await fetch(HOST_URL + 'api/users/find/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,7 +59,7 @@ export async function open_ticketwindow() {
             throw new Error('Не авторизован');
         }
 
-        const response_ticket = await fetch('http://127.0.0.1:8000/api/tickets/list/', {
+        const response_ticket = await fetch(HOST_URL + 'api/tickets/list/', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -56,6 +84,8 @@ export async function open_ticketwindow() {
             `;
         }
 
+        let buttons: TicketButton[] = [];
+
         for (let i = 0; i < result_json_ticket.length; i++) {
             if (!is_staff) {
                 if (result_json_ticket[i].user != current_user) {
@@ -63,7 +93,7 @@ export async function open_ticketwindow() {
                 }
             }
 
-            const response_flight = await fetch('http://127.0.0.1:8000/api/flights/find/', {
+            const response_flight = await fetch(HOST_URL + 'api/flights/find/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +117,7 @@ export async function open_ticketwindow() {
             _time = _time[0].split(':');
             date = `${_date[2]}-${_date[1]}-${_date[0]} ${_time[0]}:${_time[1]}`;
 
-            const response_user = await fetch('http://127.0.0.1:8000/api/users/find/', {
+            const response_user = await fetch(HOST_URL + 'api/users/find/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -134,8 +164,13 @@ export async function open_ticketwindow() {
                     <th>Идентификатор билета</th>
                     <th colspan=2>${String(result_json_ticket[i].ticket_id)}</th>
                 </tr>
+                <tr>
+                    <th colspan="3" style="text-align: center"><button class="mainwindow-button-submit ticket-${i}" id="flightwindow-button-submit">Отменить билет</button></th>
+                </tr>
             </table>
             `;
+
+            buttons.push({id: '.ticket-' + i, ticket_id: result_json_ticket[i].ticket_id} as TicketButton);
         }
 
         document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -145,6 +180,17 @@ export async function open_ticketwindow() {
             </div>
         </div>
         `;
+
+        if (sessionStorage.getItem('username')) {
+            for (let i = 0; i < buttons.length; i++) {
+                let ticket_button = document.querySelector<HTMLButtonElement>(buttons[i].id);
+
+                ticket_button?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    delete_ticket(buttons[i].ticket_id);
+                });
+            }
+        }
     } catch (error) {
         console.log('unexpected error: ', error);
 
