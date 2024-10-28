@@ -10,7 +10,7 @@ User = get_user_model()
 class ListCustomUser(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'patronymic', 'is_staff']
+        fields = ['id', 'username', 'first_name', 'last_name', 'patronymic', 'is_staff']
 
 
 class ChangeCustomUser(serializers.ModelSerializer):
@@ -87,5 +87,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         user = self.user
         data['username'] = user.username
+        data['id'] = user.id
 
         return data

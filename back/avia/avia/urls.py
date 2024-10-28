@@ -49,4 +49,5 @@ urlpatterns = [
     path('api/flights/', include('flight.urls')),
     path('api/users/', include('custom_user.urls')),
     path('api/tickets/', include('ticket.urls')),
+    path('api/chats/', include('chat.urls')),
 ]

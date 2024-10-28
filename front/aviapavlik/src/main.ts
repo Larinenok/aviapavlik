@@ -1,6 +1,7 @@
 import { open_mainwindow } from './mainwindow.ts';
 import { open_flightwindow } from './flightwindow.ts';
 import { open_ticketwindow } from './ticketwindow.ts';
+import { open_chatwindow } from './chatwindow.ts';
 import { open_signwindow } from './signwindow.ts';
 import { send_notification, hide_notification } from './utils.ts';
 
@@ -10,14 +11,13 @@ import './style.css';
 let mainwindow_button: HTMLElement | null;
 let flightwindow_button: HTMLElement | null;
 let ticketwindow_button: HTMLElement | null;
+let chatwindow_button: HTMLElement | null;
 let signwindow_button: HTMLElement | null;
 let notification_button: HTMLElement | null;
 
 
 window.addEventListener('DOMContentLoaded', () => {
     open_mainwindow();
-    // open_flightwindow();
-    // open_signwindow();
 
     if (sessionStorage.getItem('username') != null) {
         send_notification(`Вы вошли как: ${sessionStorage.getItem('username')}`)
@@ -26,6 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     mainwindow_button = document.querySelector('#mainwindow-button');
     flightwindow_button = document.querySelector('#flightwindow-button');
     ticketwindow_button = document.querySelector('#ticketwindow-button');
+    chatwindow_button = document.querySelector('#chatwindow-button');
     signwindow_button = document.querySelector('#signwindow-button');
     notification_button = document.querySelector('#notification-text');
 
@@ -40,6 +41,10 @@ window.addEventListener('DOMContentLoaded', () => {
     ticketwindow_button?.addEventListener('click', (e) => {
         e.preventDefault();
         open_ticketwindow();
+    });
+    chatwindow_button?.addEventListener('click', (e) => {
+        e.preventDefault();
+        open_chatwindow();
     });
     signwindow_button?.addEventListener('click', (e) => {
         e.preventDefault();

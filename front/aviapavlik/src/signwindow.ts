@@ -26,7 +26,6 @@ export async function open_signwindow() {
         return;
     }
 
-
     try {
         document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         <div class="mainwindow-container">

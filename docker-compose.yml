@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  django_avia:
+    container_name: django_avia
+    build:
+      context: .
+      dockerfile: config/django/Dockerfile
+    restart: on-failure
+    networks:
+      - demo
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./back/avia:/app/avia:z
+    depends_on:
+      - db_avia
+      - redis_avia
+    links:
+      - db_avia
+    environment:
+      - DJANGO_SETTINGS_MODULE=avia.settings
+
+  front_avia:
+    container_name: front_avia
+    build:
+      context: .
+      dockerfile: config/front/Dockerfile
+    restart: on-failure
+    networks:
+      - demo
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./front/aviapavlik:/app/avia:z
+    links:
+      - django_avia
+
+  # nginxavia:
+  #   container_name: nginx_avia
+  #   build: 
+  #     context: .
+  #     dockerfile: config/nginx/Dockerfile
+  #   restart: on-failure
+  #   networks:
+  #     - demo
+  #   ports:
+  #     - 8080:80
+  #   volumes:
+  #     - ./back/avia:/app/avia:z
+  #   links:
+  #     - django_avia
+
+  db_avia:
+    container_name: db_avia
+    image: postgres:15
+    networks:
+      - demo
+    ports:
+      - '5432:5432'
+    env_file:
+      - back/avia/.env
+    volumes:
+      - ./db:/var/lib/postgresql:z
+
+  redis_avia:
+    image: redis:latest
+    container_name: redis_avia
+    networks:
+      - demo
+    env_file:
+      - back/avia/.env
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redisdata:/data
+      - ./config/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  adminer:
+    container_name: adminer
+    image: adminer:4.8.1-standalone
+    restart: on-failure
+    networks:
+      - demo
+    ports:
+      - '8080:8080'
+    links:
+      - db_avia
+
+
+networks:
+  demo:
+    driver: bridge
+    # external: true

@@ -25,6 +25,7 @@ export interface TokenObj {
     access: string;
     refresh: string;
     username: string;
+    id: string;
 }
 
 export interface FlightButton {
@@ -62,6 +63,7 @@ export async function get_token(username: string, password: string) {
     sessionStorage.setItem('access', result_json.access);
     sessionStorage.setItem('refresh', result_json.refresh);
     sessionStorage.setItem('username', result_json.username);
+    sessionStorage.setItem('user_id', result_json.id);
 }
 
 export async function send_notification(text: string) {
